@@ -296,8 +296,23 @@ put_pnl_max = df_put_pnl.max().max()
 call_pnl_min = df_call_pnl.min().min()
 put_pnl_min = df_put_pnl.min().min()
 
-call_norm = mcolors.TwoSlopeNorm(vmin=call_pnl_min, vcenter=0, vmax=call_pnl_max)
-put_norm = mcolors.TwoSlopeNorm(vmin=put_pnl_min, vcenter=0, vmax=put_pnl_max)
+# Ensure vmin and vmax are different and on opposite sides of zero
+if call_pnl_min >= 0 and call_pnl_max > 0:
+    vmin, vmax = -call_pnl_max, call_pnl_max
+elif call_pnl_min < 0 and call_pnl_max <= 0:
+    vmin, vmax = call_pnl_min, -call_pnl_min
+else:
+    vmin, vmax = call_pnl_min, call_pnl_max
+call_norm = mcolors.TwoSlopeNorm(vmin=vmin, vcenter=0, vmax=vmax)
+
+# Ensure vmin and vmax are different and on opposite sides of zero
+if put_pnl_min >= 0 and put_pnl_max > 0:
+    vmin, vmax = -put_pnl_max, put_pnl_max
+elif put_pnl_min < 0 and put_pnl_max <= 0:
+    vmin, vmax = put_pnl_min, -put_pnl_min
+else:
+    vmin, vmax = put_pnl_min, put_pnl_max
+put_norm = mcolors.TwoSlopeNorm(vmin=vmin, vcenter=0, vmax=vmax)
 
 # Call Option PnL Heatmap
 sns.heatmap(
