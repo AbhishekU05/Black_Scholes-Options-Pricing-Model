@@ -97,7 +97,8 @@ expiration_date = st.sidebar.date_input(
 
 # Calculate time to expiry in years
 business_days = pd.bdate_range(start=buy_date, end=expiration_date).shape[0] - 1
-time_to_expiry = business_days / 252  # Assuming 252 trading days in a year
+delta_days = (expiration_date - buy_date).days
+time_to_expiry = delta_days / 252  # Assuming 252 trading days in a year
 
 # Display calculated time to expiry
 st.sidebar.write(
